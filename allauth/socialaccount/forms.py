@@ -1,10 +1,13 @@
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django import forms
+from django.db.models.query import EmptyQuerySet
 
 from emailconfirmation.models import EmailAddress
 from models import SocialAccount
 from allauth.account.forms import BaseSignupForm
 from allauth.account.utils import send_email_confirmation
+
+import itertools
 
 class SignupForm(BaseSignupForm):
 
@@ -13,15 +16,36 @@ class SignupForm(BaseSignupForm):
         send_email_confirmation(new_user, request=request)
         return new_user
 
+class MultiModelQuery(object): 
+    
+    def __init__(self, models): 
+        self.models = models 
+        
+    def all(self): 
+        return self 
+    
+    def __iter__(self): 
+        return itertools.chain(*(model.objects.all() for model in self.models))
+    
+    def get(self, **kwargs): 
+        for model in self.models: 
+            try: 
+                return model.objects.get(**kwargs) 
+            except model.DoesNotExist: 
+                pass 
+        raise ValidationError 
+    
+    def __len__(self):
+        return len(self.models)
 
 class DisconnectForm(forms.Form):
-    account = forms.ModelChoiceField(queryset=SocialAccount.objects.none(),
+    account = forms.ModelChoiceField(EmptyQuerySet(),
                                      widget = forms.RadioSelect,
                                      required=True)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
-        self.accounts = SocialAccount.objects.filter(user=self.user)
+        self.accounts = MultiModelQuery(SocialAccount.__subclasses__())
         super(DisconnectForm, self).__init__(*args, **kwargs)
         self.fields['account'].queryset = self.accounts
 
@@ -38,7 +62,3 @@ class DisconnectForm(forms.Form):
 
     def save(self):
         self.cleaned_data['account'].delete()
-
-    
-
-    

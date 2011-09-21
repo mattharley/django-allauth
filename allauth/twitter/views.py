@@ -86,7 +86,7 @@ def _oauth_kwargs(request, callback_url):
 def login(request):
     kwargs = _oauth_kwargs(request, reverse(callback))
     return oauth_redirect(request, **kwargs)
-                           
+
 @csrf_exempt
 def callback(request):
     kwargs = _oauth_kwargs(request, reverse(login_done))

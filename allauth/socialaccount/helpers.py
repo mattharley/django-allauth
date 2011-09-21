@@ -28,7 +28,7 @@ def _process_signup(request, data, account):
                 if email_address_exists(email):
                     # Oops, another user already has this address.  We
                     # cannot simply connect this social account to the
-                    # existing user. Reason is that the email adress may
+                    # existing user. Reason is that the email address may
                     # not be verified, meaning, the user may be a hacker
                     # that has added your email address to his account in
                     # the hope that you fall in his trap.  We cannot check
@@ -50,7 +50,7 @@ def _process_signup(request, data, account):
             url = url + '?' + urlencode(dict(next=next))
         ret = HttpResponseRedirect(url)
     else:
-        # FIXME: There is some duplication of logic inhere 
+        # FIXME: There is some duplication of logic in here 
         # (create user, send email, in active etc..)
         username = generate_unique_username \
             (data.get('username', email or 'user'))
@@ -108,7 +108,7 @@ def complete_social_login(request, data, account):
             account.save()
             messages.add_message \
             (request, messages.INFO, 
-             _('The social account has been connected to your existing account'))
+             'The social account has been connected to your existing account')
             return HttpResponseRedirect(reverse('socialaccount_connections'))
     else:
         if account.pk:

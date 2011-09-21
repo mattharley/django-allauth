@@ -83,8 +83,11 @@ class OAuthClient(object):
         """
         if self.request_token is None:
             rt_url = self.request_token_url + '?' + urllib.urlencode({'oauth_callback':self.request.build_absolute_uri(self.callback_url)})
+            print "DEBUG: %s" % rt_url
             response, content = self.client.request(rt_url, "GET")
-            if response['status'] != '200':
+            print "DEBUG: %s" % response
+            print "DEBUG: %s" % content
+            if response['status'] != 200:
                 raise OAuthError(
                     _('Invalid response while obtaining request token from "%s".') % get_token_prefix(self.request_token_url))
             self.request_token = dict(parse_qsl(content))
@@ -106,7 +109,7 @@ class OAuthClient(object):
             if self.request.REQUEST.has_key('oauth_verifier'):
                 at_url = at_url + '?' + urllib.urlencode({'oauth_verifier': self.request.REQUEST['oauth_verifier']})
             response, content = self.client.request(at_url, "GET")
-            if response['status'] != '200':
+            if response['status'] != 200:
                 raise OAuthError(
                     _('Invalid response while obtaining access token from "%s".') % get_token_prefix(self.request_token_url))
             self.access_token = dict(parse_qsl(content))
@@ -187,7 +190,7 @@ class OAuth(object):
         response, content = client.request(url, method=method, headers=headers,
             body=body)
 
-        if response['status'] != '200':
+        if response['status'] != 200:
             raise OAuthError(
                 _('No access to private resources at "%s".') % get_token_prefix(self.request_token_url))
 

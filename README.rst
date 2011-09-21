@@ -16,6 +16,7 @@ settings.py::
 
     TEMPLATE_CONTEXT_PROCESSORS = (
         ...
+        "django.core.context_processors.request",
         "allauth.context_processors.allauth",
         "allauth.account.context_processors.account"
     )
@@ -27,6 +28,7 @@ settings.py::
 
     INSTALLED_APPS = (
         ...
+        'django.contrib.sites', # required for adding Facebook/Twitter apps from the admin site
         'emailconfirmation',
 	'uni_form',
 
@@ -43,6 +45,9 @@ urls.py::
         ...
         (r'^accounts/', include('allauth.urls')))
 
+site_base.html
+--------------
+A full set of default templates is provided, but these require the presence of site_base.html which contains blocks named head_title and body.
 
 Configuration
 =============
