@@ -17,11 +17,22 @@ class SocialAccountQuery(object):
     def __iter__(self):
         return chain(*(self.queries))
     
+    def __len__(self):
+        return len(list(self.__iter__()))
+        
     def filter(self, *args, **kwargs):
         qs = self._clone()
         for query in qs.queries:
             query = query.filter(*args, **kwargs)
         return qs
+    
+    def get(self, **kwargs): 
+       for model in self.models: 
+         try: 
+           return model.objects.get(**kwargs) 
+         except model.DoesNotExist: 
+           pass 
+       raise ValidationError
     
     def _clone(self):
         qs = SocialAccountQuery(models=list(self.models))
@@ -53,7 +64,6 @@ class SocialAccount(models.Model):
     
     def authenticate(self):
         return authenticate(account=self)
-
 
     def __unicode__(self):
         return unicode(self.user)
