@@ -21,8 +21,8 @@ class DisconnectForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
-        self.accounts = SocialAccount.objects.filter(user=self.user)
         super(DisconnectForm, self).__init__(*args, **kwargs)
+        self.accounts = SocialAccount.objects.filter(user=self.user)
         self.fields['account'].queryset = self.accounts
 
     def clean(self):
@@ -38,7 +38,3 @@ class DisconnectForm(forms.Form):
 
     def save(self):
         self.cleaned_data['account'].delete()
-
-    
-
-    

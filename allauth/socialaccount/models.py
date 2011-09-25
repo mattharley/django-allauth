@@ -22,8 +22,7 @@ class SocialAccountQuery(object):
         
     def filter(self, *args, **kwargs):
         qs = self._clone()
-        for query in qs.queries:
-            query = query.filter(*args, **kwargs)
+        qs.queries = [query.filter(*args, **kwargs) for query in qs.queries]
         return qs
     
     def get(self, **kwargs): 
