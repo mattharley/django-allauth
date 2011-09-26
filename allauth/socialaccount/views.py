@@ -6,7 +6,6 @@ from django.contrib.sites.models import Site
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
-from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.sites.models import Site
 
 from allauth.utils import get_login_redirect_url
@@ -65,7 +64,7 @@ def connections(request):
         if form.is_valid():
             messages.add_message \
             (request, messages.INFO, 
-             'The social account has been disconnected')
+             _('The social account has been disconnected'))
             form.save()
             form = None
     if not form:

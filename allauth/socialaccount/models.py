@@ -10,9 +10,7 @@ from itertools import chain
 class SocialAccountQuery(object):
     def __init__(self, models=None):
         self.models = models
-        self.queries = list()
-        for model in models:
-            self.queries.append(model.objects.all())
+        self.queries = [model.objects.all() for model in models]
         
     def __iter__(self):
         return chain(*(self.queries))
@@ -35,9 +33,7 @@ class SocialAccountQuery(object):
     
     def _clone(self):
         qs = SocialAccountQuery(models=list(self.models))
-        qs.queries = list()
-        for query in self.queries:
-            qs.queries.append(query._clone())
+        qs.queries = [query._clone() for query in self.queries]
         return qs
     
 class SocialAccountManager(object):
